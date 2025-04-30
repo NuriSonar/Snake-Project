@@ -1,0 +1,16 @@
+public class Maze {
+	private char maze[][];
+	private int width;
+	private int height;
+	
+	public Maze() {
+		this.width=55;
+		this.height=23;
+		this.maze=new char[height][width];
+	}
+	
+public void loadmazetxt() {}
+  public void drawmaze(){}
+  
+  
+}

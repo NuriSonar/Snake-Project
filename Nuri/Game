@@ -1,0 +1,29 @@
+public class Game {
+
+	 Maze maze;
+	 Player player;
+	 Computer computer;
+	
+	 public Game() {
+		 maze= new Maze();
+		 maze.loadmazetxt();
+		 player=new Player(maze);
+		 computer=new Computer(maze);
+		 
+	 }
+	 
+	 public void start(){
+		 maze.drawmaze();
+		
+	 while(true){
+	player.move();
+	computer.getC().moveC();
+	computer.getS().moveS();
+	 
+	 }
+	 
+	 
+	 }
+	 
+	 
+}

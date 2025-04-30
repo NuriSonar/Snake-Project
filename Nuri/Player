@@ -1,0 +1,9 @@
+public class Player {
+	
+	private Maze maze;
+	public Player(Maze maze) {
+		this.maze=maze;
+	}
+	public void move() {}
+
+}

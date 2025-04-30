@@ -1,0 +1,17 @@
+public class SRobot {
+	private	Maze maze;
+	private int initialx;
+	private int initialy;
+	public SRobot(Maze maze) {
+		this.maze=maze;
+	}
+	public SRobot(int x,int y)
+	{
+		initialx=x;
+		initialy=y;
+	}
+public void moveS() {
+		
+	}
+
+}

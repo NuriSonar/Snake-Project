@@ -1,0 +1,11 @@
+public class CRobot {
+
+private	Maze maze;
+	public CRobot(Maze maze) {
+		this.maze=maze;
+	}
+	
+	public void moveC() {
+		
+	}
+}

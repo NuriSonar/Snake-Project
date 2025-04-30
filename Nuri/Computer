@@ -1,0 +1,19 @@
+public class Computer {
+private CRobot C;
+private SRobot S;
+private Maze maze;
+
+public Computer(Maze maze) {
+	this.maze=maze;
+	C=new CRobot(maze);
+	S=new SRobot(maze);
+}
+
+public CRobot getC() {
+	return C;
+}
+public SRobot getS() {
+	return S;
+}
+
+}

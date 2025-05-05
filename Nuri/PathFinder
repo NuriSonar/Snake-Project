@@ -1,3 +1,97 @@
+import java.util.Random;
 public class PathFinder {
+private Maze maze;
+private static int[] directionx={1,-1,0, 0};
+private static int[] directiony={0, 0,1,-1};
+private boolean[][] visited=new boolean[55][23];
+private boolean[][] path=new boolean[55][23];
+private Point current;
+PathFinder(Maze maze){
+    this.maze=maze;
+
+
+}
+public class Point{
+    int x;
+    int y;
+    Point parent;
+    Point(int x, int y, Point parent) {
+        this.x = x;
+        this.y = y;
+        this.parent = parent;
+    }
+}
+public void generatePath(){
+    Stack stack=new Stack(500);
+    stack.Push(new Point(1,1,null));
+    visited[0][0]=true;
+    while(!stack.isEmpty())
+    {
+         current=(Point)stack.Pop();
+        if(maze.getmaze()[current.y][current.x]=='1' ||maze.getmaze()[current.y][current.x]=='2'||maze.getmaze()[current.y][current.x]=='3')
+        {
+            markpath(current);
+            break;
+        }
+        int[] directions={0,1,2,3};
+        for(int i=directions.length-1;i>0;i--)
+        {
+            Random rand=new Random();
+            int j=rand.nextInt(i+1);
+            int temp=directions[i];
+            directions[i]=directions[j];
+            directions[j]=temp;
+        }
+
+        for(int i=0;i<4;i++)
+        {
+            int dir= directions[i];
+            int nx=current.x+directionx[dir];
+            int ny=current.y+directiony[dir];
+            if(nx>=0 && ny>=0 && nx<55 && ny <23 ){
+                if(maze.getmaze()[ny][nx]!='#' && !visited[ny][nx] )
+                {
+                    visited[ny][nx]=true;
+                    stack.Push(new Point(nx,ny,current));
+                }
+            }
+        }
+
+    }
+
+}
+public Point getcurrent(){
+    return current;
+    }
+
+public void markpath(Point end){
+while(end!=null){
+    path[end.y][end.x]=true;
+    end=end.parent;
+}
+}
+
+    public void MazeWithPath() {
+        for (int y = 0; y < 23; y++)
+        {
+            for (int x = 0; x < 55; x++)
+            {
+               if(path[y][x] && maze.getmaze()[y][x]==' ')maze.getmaze()[y][x]='.';
+            }
+        }
+    }
+    public void reset() {
+
+        for (int y = 0; y < 23; y++) {
+            for (int x = 0; x < 55; x++) {
+                visited[y][x] = false;
+                path[y][x] = false;
+            }
+        }
+        current = null;
+    }
+    
+
+
 
 }

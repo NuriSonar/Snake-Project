@@ -1,29 +1,41 @@
 public class Game {
+    Maze maze;
+    Player player;
+    Computer computer;
+    long lastQueueUpdateTime;
+    boolean gameRunning = true;
+    public Game() {
 
-	 Maze maze;
-	 Player player;
-	 Computer computer;
-	
-	 public Game() {
-		 maze= new Maze();
-		 maze.loadmazetxt();
-		 player=new Player(maze);
-		 computer=new Computer(maze);
-		 
-	 }
-	 
-	 public void start(){
-		 maze.drawmaze();
-		
-	 while(true){
-	player.move();
-	computer.getC().moveC();
-	computer.getS().moveS();
-	 
-	 }
-	 
-	 
-	 }
-	 
-	 
+        maze= new Maze();
+        maze.readMazeFromFile("src/Maze.txt");
+        player=new Player(maze);
+        computer=new Computer(maze);
+
+    }
+
+    public void start(){
+        Maze.initializeBoardAndQueue();
+        lastQueueUpdateTime = System.currentTimeMillis();
+       /*maze.displayMaze();
+        Maze.DisplayInfo();
+        Maze.QueueFiller();*/
+        while (gameRunning) {
+
+            // --- Zamanlanmış Kuyruk Güncelleme ---
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastQueueUpdateTime >= Maze.QUEUE_UPDATE_INTERVAL) {
+                Maze.updateQueueAndBoard(); // Kuyruğu ve haritayı güncelle
+                lastQueueUpdateTime = currentTime; // Zamanlayıcıyı sıfırla
+            }
+       /* while(true){
+            player.move();
+            computer.getC().moveC();
+            computer.getS().moveS();
+
+
+        }*/
+
+        }
+    }
 }
+

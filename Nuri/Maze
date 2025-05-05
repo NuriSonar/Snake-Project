@@ -1,16 +1,195 @@
+import enigma.console.Console;
+import enigma.console.TextAttributes;
+import enigma.core.Enigma;
+
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.SQLOutput;
+import java.util.Random;
+
 public class Maze {
-	private char maze[][];
-	private int width;
-	private int height;
-	
-	public Maze() {
-		this.width=55;
-		this.height=23;
-		this.maze=new char[height][width];
-	}
-	
-public void loadmazetxt() {}
-  public void drawmaze(){}
-  
-  
+    public static Console console;
+    private static final int ROWS = 23;
+    private static final int COLS = 55;
+    public static char[][] maze = new char[23][55];
+    public static Queue inputQueue = new Queue(15);
+    public static final long QUEUE_UPDATE_INTERVAL = 2000;
+    public Maze() {
+
+        console = Enigma.getConsole("Number Snakes Game", 120, 40, 16);
+    }
+
+
+    public boolean readMazeFromFile(String fileName) {
+
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+            int row = 0;
+
+
+            while ((line = reader.readLine()) != null && row < ROWS) {
+                // Her satırdaki karakterleri diziye aktar
+                for (int col = 0; col < COLS; col++) {
+                    maze[row][col] = line.charAt(col);
+                }
+
+
+                row++;
+            }
+
+
+            reader.close();
+            return true;
+
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
+
+
+    public static void  displayMaze() {
+
+        console.getTextWindow().setCursorPosition(0, 0);
+
+
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+
+                switch (maze[row][col]) {
+                    case '#':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.WHITE, Color.BLACK));
+                        break;
+                    case 'P':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.GREEN, Color.BLACK));
+                        break;
+                    case 'C':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.RED, Color.BLACK));
+                        break;
+                    case 'S':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.MAGENTA, Color.BLACK));
+                        break;
+                    case '1':
+                    case '2':
+                    case '3':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.BLACK, Color.white));
+                        break;
+                    case '@':
+                    case '=':
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.CYAN, Color.BLACK));
+                        break;
+                    default:
+                        console.getTextWindow().output(maze[row][col],
+                                new TextAttributes(Color.WHITE, Color.white));
+                }
+            }
+
+            console.getTextWindow().setCursorPosition(0, row + 1);
+        }
+    }
+
+
+    public static void initializeBoardAndQueue() {
+
+        for (int i = 0; i < 13; i++) {
+            int r = (int) (Math.random() * 100) + 1;
+            if (r <= 50) RandomPlacer('1');
+            else if (r <= 75) RandomPlacer('2');
+            else if (r <= 88) RandomPlacer('3');
+            else if (r <= 97) RandomPlacer('@');
+            else RandomPlacer('S');
+        }
+        RandomPlacer('P');
+        RandomPlacer('C');
+
+
+        for (int i = 0; i < 15; i++) {
+            int r = (int) (Math.random() * 100) + 1;
+            if (r <= 50) inputQueue.enqueue('1');
+            else if (r <= 75) inputQueue.enqueue('2');
+            else if (r <= 88) inputQueue.enqueue('3');
+            else if (r <= 97) inputQueue.enqueue('@');
+            else inputQueue.enqueue('S');
+        }
+
+
+        displayMaze();
+        DisplayInfo();
+    }
+    public static void updateQueueAndBoard() {
+        if (!inputQueue.isEmpty()) {
+
+            char itemToPlace = (char) inputQueue.dequeue();
+            RandomPlacer(itemToPlace);
+
+            // Yeni elemanı kuyruğa ekle
+            int r = (int) (Math.random() * 100) + 1;
+            if (r <= 50) inputQueue.enqueue('1');
+            else if (r <= 75) inputQueue.enqueue('2');
+            else if (r <= 88) inputQueue.enqueue('3');
+            else if (r <= 97) inputQueue.enqueue('@');
+            else inputQueue.enqueue('S');
+
+            DisplayInfo();
+            displayMaze();
+        } 
+
 }
+
+    static void RandomPlacer(char data) {
+        Random rand = new Random();
+        int x = 0;
+        int y = 0;
+        do {
+            x = rand.nextInt(55);
+            y = rand.nextInt(23);
+        } while (maze[y][x] != ' ' || (x == 0 && y == 0));
+        maze[y][x] = data;
+    }
+
+    static void DisplayInfo() {
+        console.getTextWindow().setCursorPosition(58, 1);
+        console.getTextWindow().output("Input", new TextAttributes(Color.WHITE, Color.BLACK));
+
+
+        console.getTextWindow().setCursorPosition(58, 2);
+        console.getTextWindow().output("<<<<<<<<<<<<<<<", new TextAttributes(Color.BLACK, Color.WHITE));
+
+        console.getTextWindow().setCursorPosition(58, 3);
+        DisplayQueue(inputQueue);
+
+
+        console.getTextWindow().setCursorPosition(58, 4);
+        console.getTextWindow().output("<<<<<<<<<<<<<<<", new TextAttributes(Color.BLACK, Color.WHITE));
+
+
+    }
+
+    static void DisplayQueue(Queue q) {
+        Queue tempQ = new Queue(q.size()+1);
+        int pos = 0;
+        while (!q.isEmpty()) {
+            char ch = (char) q.dequeue();
+            console.getTextWindow().setCursorPosition(58 + pos, 3);
+            console.getTextWindow().output(ch);
+            tempQ.enqueue(ch);
+            pos++;
+        }
+        while (!tempQ.isEmpty()) {
+            q.enqueue(tempQ.dequeue());
+        }
+    }
+}
+
+

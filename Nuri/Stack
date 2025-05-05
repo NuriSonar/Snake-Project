@@ -1,0 +1,52 @@
+public class Stack {
+    private int top;
+    private Object[] elements;
+    Stack(int capacity){
+        elements= new Object[capacity];
+        top=-1;
+    }
+    void Push(Object data) {
+        if(isFull())System.out.print("Stack overflow");
+        else {
+            top++;
+            elements[top]=data;
+        }
+    }
+    Object Pop() {
+        if(isEmpty())
+        {
+            System.out.print("Stack is empty.");
+            return null;
+        }
+        else
+        {
+            Object retdata=elements[top];
+            top--;
+            return retdata;
+        }
+
+    }
+    Object Peek() {
+        if(isEmpty())
+        {
+            System.out.print("Stack is empty");
+            return null;
+        }
+        else {
+            return elements[top];
+        }
+
+    }
+    boolean isEmpty() {
+        return top==-1;
+    }
+    boolean isFull() {
+        return (top+1==elements.length);
+    }
+
+    int size() {
+        return 	top+1;
+    }
+
+
+}
